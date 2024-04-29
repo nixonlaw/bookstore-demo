@@ -1,0 +1,34 @@
+version: '3'
+services:
+  bookstore-fe:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+      - BACKEND_URL=http://bookstore-be:8081
+      - TZ=Asia/Hong_kong
+
+  bookstore-be:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '8081:8081'
+    environment:
+      - PORT=8081
+      - MONGODB_CONNECTION=mongodb://mongo-db:27017/bookstore?directConnection=true
+      - TZ=Asia/Hong_kong
+      - SESSION_SECRET=helloworld
+    depends_on:
+      - mongo-db
+
+  mongo-db:
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongo_init.js:/docker-entrypoint-initdb.d/mongo_init.js:ro
