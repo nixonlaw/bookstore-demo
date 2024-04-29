@@ -38,8 +38,8 @@ export const listAndFilterBooks = async ({
             ...(!isEmpty(categories) ? {categories: {$in: categories}} : {}),
             ...(!isEmpty(authors) ? {authors: {$regex: RegexEscaper(authors, 'i')}} : {}),
             ...(!isEmpty(title) ? {title: {$regex: RegexEscaper(title, 'i')}} : {}),
-            ...(isNumber(ratings[0]) && isNumber(ratings[1]) ? {ratings: {$gte: ratings[0], $lte: ratings[1]}} : {}),
-            ...(isNumber(price[0]) && isNumber(price[1]) ? {price: {$gte: price[0], $lte: price[1]}} : {}),
+            ...(!isEmpty(ratings) && isNumber(ratings[0]) && isNumber(ratings[1]) ? {ratings: {$gte: ratings[0], $lte: ratings[1]}} : {}),
+            ...(!isEmpty(price) && isNumber(price[0]) && isNumber(price[1]) ? {price: {$gte: price[0], $lte: price[1]}} : {}),
         }).lean();
 
         return books;
